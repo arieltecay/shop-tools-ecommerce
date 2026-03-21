@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ShoppingCart, ArrowLeft, Loader2, Check, AlertCircle } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Loader2, Check, AlertCircle, MessageCircle } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import api from '../../services/api';
 import { useCartStore } from '../../store/useCartStore';
 import { IProduct } from '../../types';
 import { getOptimizedUrl } from '../../utils/image-utils';
+import { getWhatsAppLink } from '../../utils/whatsapp-utils';
 
 const ProductDetail = () => {
   const { productSlug } = useParams();
@@ -169,7 +170,7 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            <button 
+            <button
               onClick={handleAddToCart}
               disabled={product.stock === 0 || added}
               className={`flex w-full items-center justify-center gap-3 rounded-2xl px-8 py-5 text-xl font-black text-white transition-all shadow-xl ${
@@ -179,6 +180,15 @@ const ProductDetail = () => {
               {added ? <Check size={28} strokeWidth={3} /> : <ShoppingCart size={28} />}
               {added ? '¡EN EL CARRITO!' : 'COMPRAR AHORA'}
             </button>
+            <a 
+              href={getWhatsAppLink(product.name, product.sku)} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-3 rounded-2xl px-8 py-5 text-xl font-black text-blue-600 border-2 border-blue-600 hover:bg-blue-50 transition-all shadow-md hover:shadow-lg active:scale-95"
+            >
+              <MessageCircle size={28} color="#25D366" />
+              CONSULTAR POR WHATSAPP
+            </a>
           </div>
         </div>
       </div>
@@ -195,6 +205,17 @@ const ProductDetail = () => {
           />
         </div>
       </div>
+
+      {/* Floating WhatsApp button for mobile */}
+      <a
+        href={getWhatsAppLink(product.name, product.sku)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-full shadow-lg md:hidden flex items-center justify-center z-50 transition-transform hover:scale-110 active:scale-90"
+        aria-label="Consultar por WhatsApp"
+      >
+        <MessageCircle size={28} color="white" />
+      </a>
     </div>
   );
 };
