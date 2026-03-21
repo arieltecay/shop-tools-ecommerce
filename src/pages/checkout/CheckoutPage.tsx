@@ -85,12 +85,12 @@ const CheckoutPage = () => {
     setCouponLoading(true);
     setCouponError(null);
     try {
-      const response = await api.post<{ discount: IDiscountCode }>('/discount-codes/validate', {
+      const response = await api.post<{ code: IDiscountCode }>('/discount-codes/validate', {
         code: couponCode,
         email: formData.customer.email,
         orderAmount: total
       });
-      setAppliedCoupon(response.data.discount);
+      setAppliedCoupon(response.data.code);
       setCouponError(null);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Cupón no válido';
