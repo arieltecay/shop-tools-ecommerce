@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import api from '../../services/api';
 import { IProduct, ICategory, IBrand } from '../../types';
 import { getOptimizedUrl } from '../../utils/image-utils';
+import { useCartStore } from '../../store/useCartStore';
 
 const ProductCatalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -15,6 +16,8 @@ const ProductCatalog = () => {
   const [brands, setBrands] = useState<IBrand[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const addItem = useCartStore((state) => state.addItem);
   
   const category = categorySlug || searchParams.get('category') || '';
   const brand = searchParams.get('brand') || '';
@@ -262,6 +265,9 @@ const ProductCatalog = () => {
                         </div>
                         <button 
                           disabled={product.stock === 0}
+                          onClick={() => {
+                            addItem(product, 1);
+                          }}
                           className={`rounded-xl p-3 text-white transition-all shadow-lg ${product.stock === 0 ? 'bg-gray-200 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 hover:shadow-blue-200 active:scale-95'}`}
                         >
                           <ShoppingCart size={20} strokeWidth={3} />
