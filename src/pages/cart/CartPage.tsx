@@ -3,8 +3,9 @@ import { Trash2, ArrowLeft, ShoppingBag, Plus, Minus } from 'lucide-react';
 import { useCartStore } from '../../store/useCartStore';
 
 const CartPage = () => {
-  const { items, removeItem, updateQuantity, total } = useCartStore();
+  const { items, removeItem, updateQuantity, getTotal } = useCartStore();
   const navigate = useNavigate();
+  const total = getTotal();
 
   if (items.length === 0) {
     return (

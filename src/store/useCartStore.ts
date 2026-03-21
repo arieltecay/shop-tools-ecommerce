@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 interface CartItem {
   uuid: string;
-  _id: string; // Internal ID needed for order creation
+  _id: string; 
   name: string;
   price: number;
   quantity: number;
@@ -18,8 +18,8 @@ interface CartState {
   removeItem: (uuid: string) => void;
   updateQuantity: (uuid: string, quantity: number) => void;
   clearCart: () => void;
-  total: number;
-  itemCount: number;
+  getTotal: () => number;
+  getItemCount: () => number;
 }
 
 export const useCartStore = create<CartState>()(
@@ -27,12 +27,12 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
       addItem: (product, quantity) => {
-        const items = get().items;
-        const existingItem = items.find((i) => i.uuid === product.uuid);
+        const currentItems = get().items;
+        const existingItem = currentItems.find((i) => i.uuid === product.uuid);
 
         if (existingItem) {
           set({
-            items: items.map((i) =>
+            items: currentItems.map((i) =>
               i.uuid === product.uuid
                 ? { ...i, quantity: Math.min(i.quantity + quantity, product.stock) }
                 : i
@@ -41,7 +41,7 @@ export const useCartStore = create<CartState>()(
         } else {
           set({
             items: [
-              ...items,
+              ...currentItems,
               {
                 uuid: product.uuid,
                 _id: product._id,
@@ -67,11 +67,11 @@ export const useCartStore = create<CartState>()(
         });
       },
       clearCart: () => set({ items: [] }),
-      get total() {
-        return get().items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+      getTotal: () => {
+        return get().items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       },
-      get itemCount() {
-        return get().items.reduce((sum, i) => sum + i.quantity, 0);
+      getItemCount: () => {
+        return get().items.reduce((sum, item) => sum + item.quantity, 0);
       },
     }),
     {

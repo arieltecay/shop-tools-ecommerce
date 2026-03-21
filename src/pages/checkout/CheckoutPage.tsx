@@ -25,8 +25,9 @@ interface CheckoutFormData {
 }
 
 const CheckoutPage = () => {
-  const { items, total, clearCart } = useCartStore();
+  const { items, getTotal, clearCart } = useCartStore();
   const navigate = useNavigate();
+  const total = getTotal();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [orderConfirmed, setOrderConfirmed] = useState<IOrder | null>(null);
