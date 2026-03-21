@@ -97,13 +97,13 @@ const CheckoutPage = () => {
         <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-green-50 mb-6 border border-green-100 animate-bounce">
           <CheckCircle2 size={40} className="text-green-500" />
         </div>
-        <h1 className="text-3xl font-black text-gray-900 uppercase italic tracking-tighter mb-2">Orden Confirmada</h1>
+        <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tighter mb-2">Orden Confirmada</h1>
         <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-8">PEDIDO #{orderConfirmed.orderNumber}</p>
         
         <div className="bg-blue-50/50 p-6 rounded-2xl text-left border border-blue-100 mb-8 backdrop-blur-sm">
           <div className="flex items-center gap-2 mb-4">
             <ReceiptText size={18} className="text-blue-600" />
-            <h2 className="text-[11px] font-black text-blue-900 uppercase tracking-widest italic">Instrucciones de Pago</h2>
+            <h2 className="text-[11px] font-black text-blue-900 uppercase tracking-widest">Instrucciones de Pago</h2>
           </div>
           <p className="text-[10px] font-bold text-blue-700 leading-relaxed uppercase">
             Hemos enviado un comprobante a <span className="underline">{formData.customer.email}</span> con los datos bancarios. 
@@ -127,7 +127,7 @@ const CheckoutPage = () => {
           <ArrowLeft size={18} />
         </button>
         <div>
-          <h1 className="text-2xl font-black text-gray-900 uppercase italic tracking-tighter">Checkout Profesional</h1>
+          <h1 className="text-2xl font-black text-gray-900 uppercase tracking-tighter">Checkout Profesional</h1>
           <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Estación de despacho seguro</p>
         </div>
       </div>
@@ -137,8 +137,8 @@ const CheckoutPage = () => {
           {/* Section 1: Customer */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-6 shadow-sm">
             <div className="flex items-center gap-3">
-              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600 text-[10px] font-black text-white italic">01</span>
-              <h2 className="text-[11px] font-black uppercase tracking-widest text-gray-900 italic">Identificación del Cliente</h2>
+              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600 text-[10px] font-black text-white">01</span>
+              <h2 className="text-[11px] font-black uppercase tracking-widest text-gray-900">Identificación del Cliente</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
@@ -163,8 +163,8 @@ const CheckoutPage = () => {
           {/* Section 2: Shipping */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-6 shadow-sm">
             <div className="flex items-center gap-3">
-              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600 text-[10px] font-black text-white italic">02</span>
-              <h2 className="text-[11px] font-black uppercase tracking-widest text-gray-900 italic">Logística de Entrega</h2>
+              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600 text-[10px] font-black text-white">02</span>
+              <h2 className="text-[11px] font-black uppercase tracking-widest text-gray-900">Logística de Entrega</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2 space-y-1">
@@ -196,8 +196,8 @@ const CheckoutPage = () => {
           {/* Section 3: Payment */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-6 shadow-sm">
             <div className="flex items-center gap-3">
-              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600 text-[10px] font-black text-white italic">03</span>
-              <h2 className="text-[11px] font-black uppercase tracking-widest text-gray-900 italic">Medio de Pago Seguro</h2>
+              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600 text-[10px] font-black text-white">03</span>
+              <h2 className="text-[11px] font-black uppercase tracking-widest text-gray-900">Medio de Pago Seguro</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <label className={`flex items-center gap-3 rounded-xl border p-4 cursor-pointer transition-all ${
@@ -206,7 +206,7 @@ const CheckoutPage = () => {
                 <input type="radio" name="payment.method" value="bank_transfer" checked={formData.payment.method === 'bank_transfer'} onChange={handleInputChange} className="h-4 w-4 text-blue-600" />
                 <div>
                   <p className="text-[10px] font-black uppercase text-gray-900 leading-none">Transferencia</p>
-                  <p className="text-[8px] font-bold text-gray-400 uppercase tracking-widest mt-1 italic">Sin recargos</p>
+                  <p className="text-[8px] font-bold text-gray-400 uppercase tracking-widest mt-1">Sin recargos</p>
                 </div>
               </label>
               
@@ -216,7 +216,7 @@ const CheckoutPage = () => {
                 <input type="radio" name="payment.method" value="card" checked={formData.payment.method === 'card'} onChange={handleInputChange} className="h-4 w-4 text-blue-600" />
                 <div>
                   <p className="text-[10px] font-black uppercase text-gray-900 leading-none">Tarjeta BBVA</p>
-                  <p className="text-[8px] font-bold text-gray-400 uppercase tracking-widest mt-1 italic">Vía Decidir (Safe)</p>
+                  <p className="text-[8px] font-bold text-gray-400 uppercase tracking-widest mt-1">Vía Decidir (Safe)</p>
                 </div>
               </label>
             </div>
@@ -230,10 +230,10 @@ const CheckoutPage = () => {
                   <CreditCard className="text-blue-400 opacity-50" size={24} />
                 </div>
                 <div className="space-y-3">
-                  <div id="card-number" className="h-10 border border-blue-700 rounded-xl p-3 bg-blue-950/50 flex items-center text-blue-300 text-[10px] font-mono italic">NUMERO DE TARJETA (FRAME DECIDIR)</div>
+                  <div id="card-number" className="h-10 border border-blue-700 rounded-xl p-3 bg-blue-950/50 flex items-center text-blue-300 text-[10px] font-mono">NUMERO DE TARJETA (FRAME DECIDIR)</div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div id="expiry-date" className="h-10 border border-blue-700 rounded-xl p-3 bg-blue-950/50 flex items-center text-blue-300 text-[10px] font-mono italic">MM/YY</div>
-                    <div id="security-code" className="h-10 border border-blue-700 rounded-xl p-3 bg-blue-950/50 flex items-center text-blue-300 text-[10px] font-mono italic">CVV</div>
+                    <div id="expiry-date" className="h-10 border border-blue-700 rounded-xl p-3 bg-blue-950/50 flex items-center text-blue-300 text-[10px] font-mono">MM/YY</div>
+                    <div id="security-code" className="h-10 border border-blue-700 rounded-xl p-3 bg-blue-950/50 flex items-center text-blue-300 text-[10px] font-mono">CVV</div>
                   </div>
                 </div>
               </div>
@@ -244,23 +244,23 @@ const CheckoutPage = () => {
         {/* Order Summary Column */}
         <div className="lg:col-span-4 space-y-4">
           <div className="bg-gray-900 rounded-3xl p-6 text-white shadow-2xl shadow-blue-900/20 sticky top-24">
-            <h2 className="text-[11px] font-black uppercase tracking-widest italic mb-6 text-blue-400">Resumen de Despacho</h2>
+            <h2 className="text-[11px] font-black uppercase tracking-widest mb-6 text-blue-400">Resumen de Despacho</h2>
             
             <div className="max-h-48 overflow-y-auto mb-6 space-y-3 pr-2 scrollbar-thin scrollbar-thumb-blue-800">
               {items.map(item => (
                 <div key={item.uuid} className="flex justify-between items-start gap-4">
                   <div className="flex-1">
-                    <p className="text-[10px] font-black uppercase leading-tight italic">{item.name}</p>
+                    <p className="text-[10px] font-black uppercase leading-tight">{item.name}</p>
                     <p className="text-[8px] font-bold text-gray-500 uppercase tracking-widest">CANT: {item.quantity}</p>
                   </div>
-                  <span className="text-[10px] font-black italic tracking-tighter">${(item.price * item.quantity).toLocaleString()}</span>
+                  <span className="text-[10px] font-black tracking-tighter">${(item.price * item.quantity).toLocaleString()}</span>
                 </div>
               ))}
             </div>
 
             {/* Coupon Section */}
             <div className="bg-white/5 rounded-2xl p-4 mb-6 border border-white/10">
-              <label className="text-[8px] font-black uppercase text-gray-400 tracking-widest mb-2 block italic">Cupón de Descuento</label>
+              <label className="text-[8px] font-black uppercase text-gray-400 tracking-widest mb-2 block">Cupón de Descuento</label>
               <div className="flex gap-2">
                 <input 
                   type="text" placeholder="CÓDIGO" value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
@@ -274,7 +274,7 @@ const CheckoutPage = () => {
                 </button>
               </div>
               {appliedCoupon && (
-                <button onClick={() => { setAppliedCoupon(null); setCouponCode(''); }} className="mt-2 text-[8px] font-black text-rose-500 uppercase tracking-widest hover:underline italic">Remover Cupón</button>
+                <button onClick={() => { setAppliedCoupon(null); setCouponCode(''); }} className="mt-2 text-[8px] font-black text-rose-500 uppercase tracking-widest hover:underline">Remover Cupón</button>
               )}
             </div>
 
@@ -284,7 +284,7 @@ const CheckoutPage = () => {
                 <span className="text-white">${total.toLocaleString()}</span>
               </div>
               {appliedCoupon && (
-                <div className="flex justify-between text-[10px] font-black text-emerald-400 uppercase tracking-widest italic">
+                <div className="flex justify-between text-[10px] font-black text-emerald-400 uppercase tracking-widest">
                   <span>Descuento</span>
                   <span>-${calculateDiscount().toLocaleString()}</span>
                 </div>
@@ -293,21 +293,21 @@ const CheckoutPage = () => {
                 <span>Logística</span>
                 <span className="text-emerald-400 flex items-center gap-1"><Truck size={10} /> GRATIS</span>
               </div>
-              <div className="flex justify-between text-lg font-black italic tracking-tighter pt-2 border-t border-white/10">
+              <div className="flex justify-between text-lg font-black tracking-tighter pt-2 border-t border-white/10">
                 <span className="text-blue-400 uppercase text-xs">Total Final</span>
                 <span className="text-2xl">${finalTotal.toLocaleString()}</span>
               </div>
             </div>
 
             {error && (
-              <div className="mb-4 flex items-center gap-2 p-3 rounded-xl bg-rose-500/10 text-rose-400 text-[9px] font-black uppercase tracking-widest border border-rose-500/20 italic">
+              <div className="mb-4 flex items-center gap-2 p-3 rounded-xl bg-rose-500/10 text-rose-400 text-[9px] font-black uppercase tracking-widest border border-rose-500/20">
                 <AlertCircle size={14} /> {error}
               </div>
             )}
 
             <button 
               type="submit" disabled={loading}
-              className="w-full rounded-2xl bg-blue-600 py-5 text-[12px] font-black uppercase tracking-[0.2em] text-white shadow-2xl shadow-blue-500/20 transition-all hover:bg-blue-700 hover:-translate-y-1 active:scale-95 disabled:bg-gray-800 disabled:text-gray-600 italic"
+              className="w-full rounded-2xl bg-blue-600 py-5 text-[12px] font-black uppercase tracking-[0.2em] text-white shadow-2xl shadow-blue-500/20 transition-all hover:bg-blue-700 hover:-translate-y-1 active:scale-95 disabled:bg-gray-800 disabled:text-gray-600"
             >
               {loading ? <Loader2 className="animate-spin mx-auto" size={24} /> : 'Confirmar y Despachar'}
             </button>
