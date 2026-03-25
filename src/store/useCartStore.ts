@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { IProduct, IProductImage } from '../types';
 
 interface CartItem {
   uuid: string;
@@ -14,7 +15,7 @@ interface CartItem {
 
 interface CartState {
   items: CartItem[];
-  addItem: (product: any, quantity: number) => void;
+  addItem: (product: IProduct, quantity: number) => void;
   removeItem: (uuid: string) => void;
   updateQuantity: (uuid: string, quantity: number) => void;
   clearCart: () => void;
@@ -48,7 +49,7 @@ export const useCartStore = create<CartState>()(
                 name: product.name,
                 price: product.price,
                 quantity,
-                image: product.images.find((img: any) => img.isPrimary)?.url || product.images[0]?.url,
+                image: product.images.find((img: IProductImage) => img.isPrimary)?.url || product.images[0]?.url,
                 sku: product.sku,
                 stock: product.stock
               },

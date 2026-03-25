@@ -4,6 +4,7 @@ import { Loader2, CheckCircle2, AlertCircle, ArrowLeft, CreditCard, Tag, ShieldC
 import { useCartStore } from '../../store/useCartStore';
 import api from '../../services/api';
 import { IOrder, IDiscountCode } from '../../types';
+import axios, { AxiosError } from 'axios';
 
 interface CheckoutFormData {
   customer: { fullName: string; email: string; phone: string; idNumber: string; };
@@ -36,10 +37,15 @@ const CheckoutPage = () => {
     const { name, value } = e.target;
     if (name.includes('.')) {
       const [section, field] = name.split('.') as [keyof CheckoutFormData, string];
-      const sectionData = formData[section] as any;
-      setFormData(prev => ({ ...prev, [section]: { ...sectionData, [field]: value } }));
+      setFormData(prev => ({
+        ...prev,
+        [section]: {
+          ...prev[section as keyof typeof prev], // Esto sigue siendo un poco problemático sin un casting más agresivo o una estructura de tipos más plana.
+          [field]: value
+        }
+      }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData(prev => ({ ...prev, [name as keyof CheckoutFormData]: value }));
     }
   };
 
@@ -52,8 +58,13 @@ const CheckoutPage = () => {
         code: couponCode, email: formData.customer.email, orderAmount: total
       });
       setAppliedCoupon(response.data.code);
-    } catch (err: any) {
-      setCouponError(err.response?.data?.message || 'Cupón no válido');
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        const axiosError = err as AxiosError<{ message?: string }>;
+        setCouponError(axiosError.response?.data?.message || 'Cupón no válido');
+      } else {
+        setCouponError('Error desconocido al aplicar el cupón');
+      }
       setAppliedCoupon(null);
     } finally { setLoading(false); setCouponLoading(false); }
   };
@@ -86,8 +97,13 @@ const CheckoutPage = () => {
       const response = await api.post<IOrder>('/orders', orderData);
       setOrderConfirmed(response.data);
       clearCart();
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'ERROR EN EL PROCESAMIENTO');
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        const axiosError = err as AxiosError<{ message?: string }>;
+        setError(axiosError.response?.data?.message || 'ERROR EN EL PROCESAMIENTO');
+      } else {
+        setError('Error desconocido en el procesamiento');
+      }
     } finally { setLoading(false); }
   };
 
