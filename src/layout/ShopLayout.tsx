@@ -142,7 +142,7 @@ const ShopLayout = () => {
             © {new Date().getFullYear()} Tools Store. Todos los derechos reservados.
           </div>
           <div className="mt-4 text-center text-[9px] font-black text-gray-400 uppercase tracking-widest">
-            Ariel Tecay
+            ariel tecay software engineer
           </div>
         </div>
       </footer>
