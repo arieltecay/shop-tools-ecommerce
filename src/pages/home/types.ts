@@ -27,6 +27,19 @@ export interface Product {
   images: ProductImage[];
   category: Category;
   brand: Brand;
+  shortDescription?: string;
+}
+
+export interface HeroSlide {
+  _id: string;
+  productUuid: string;
+  title: string;
+  subtitle?: string;
+  buttonText: string;
+  imageUrl?: string;
+  backgroundColor?: string;
+  textColor: string;
+  product: Product;
 }
 
 export interface ProductsResponse {

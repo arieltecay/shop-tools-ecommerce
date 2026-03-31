@@ -3,25 +3,32 @@ import { ArrowRight, ShoppingCart, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import { useCartStore } from '../../store/useCartStore';
-import { Product, ProductsResponse } from './types';
+import { Product, ProductsResponse, HeroSlide } from './types';
+import HeroCarousel from './components/HeroCarousel';
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
   const [loading, setLoading] = useState(true);
   const addItem = useCartStore((state) => state.addItem);
 
   useEffect(() => {
-    fetchFeatured();
+    fetchData();
   }, []);
 
-  const fetchFeatured = async () => {
+  const fetchData = async () => {
     try {
-      const response = await api.get<ProductsResponse>('/products', {
-        params: { isFeatured: 'true', limit: 4, status: 'active' }
-      });
-      setFeaturedProducts(response.data.products);
+      const [productsRes, heroRes] = await Promise.all([
+        api.get<ProductsResponse>('/products', {
+          params: { isFeatured: 'true', limit: 4, status: 'active' }
+        }),
+        api.get<HeroSlide[]>('/hero-slides/public')
+      ]);
+      
+      setFeaturedProducts(productsRes.data.products);
+      setHeroSlides(heroRes.data);
     } catch (err) {
-      console.error('Error fetching featured products:', err);
+      console.error('Error fetching home data:', err);
     } finally {
       setLoading(false);
     }
@@ -30,28 +37,32 @@ const Home = () => {
   return (
     <div className="space-y-16 pb-20">
       {/* Hero Section */}
-      <section className="relative h-[500px] overflow-hidden bg-gray-900 text-white">
-        <div className="container mx-auto flex h-full items-center px-4 relative z-10">
-          <div className="max-w-2xl space-y-6">
-            <h1 className="text-5xl font-extrabold tracking-tight md:text-6xl">
-              Equípate con lo mejor en herramientas
-            </h1>
-            <p className="text-lg text-gray-300">
-              Calidad profesional para tus proyectos más exigentes. Envíos a todo el país.
-            </p>
-            <div className="flex gap-4">
-              <Link to="/products" className="rounded-lg bg-blue-600 px-8 py-3 font-semibold hover:bg-blue-700 transition-colors">
-                Ver catálogo
-              </Link>
-              <Link to="/products?isFeatured=true" className="rounded-lg border border-white px-8 py-3 font-semibold hover:bg-white hover:text-gray-900 transition-colors">
-                Ofertas
-              </Link>
+      {heroSlides.length > 0 ? (
+        <HeroCarousel slides={heroSlides} />
+      ) : (
+        <section className="relative h-[500px] overflow-hidden bg-gray-900 text-white">
+          <div className="container mx-auto flex h-full items-center px-4 relative z-10">
+            <div className="max-w-2xl space-y-6">
+              <h1 className="text-5xl font-extrabold tracking-tight md:text-6xl">
+                Equípate con lo mejor en herramientas
+              </h1>
+              <p className="text-lg text-gray-300">
+                Calidad profesional para tus proyectos más exigentes. Envíos a todo el país.
+              </p>
+              <div className="flex gap-4">
+                <Link to="/products" className="rounded-lg bg-blue-600 px-8 py-3 font-semibold hover:bg-blue-700 transition-colors">
+                  Ver catálogo
+                </Link>
+                <Link to="/products?isFeatured=true" className="rounded-lg border border-white px-8 py-3 font-semibold hover:bg-white hover:text-gray-900 transition-colors">
+                  Ofertas
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="absolute inset-0 bg-blue-600/20 mix-blend-multiply" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent" />
-      </section>
+          <div className="absolute inset-0 bg-blue-600/20 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent" />
+        </section>
+      )}
 
       {/* Categories Grid */}
       <section className="container mx-auto px-4">
