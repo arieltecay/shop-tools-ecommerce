@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import ShopLayout from './layout/ShopLayout';
-import Home from './pages/Home';
+import Home from './pages/home/Home';
 import ProductCatalog from './pages/products/ProductCatalog';
 import ProductDetail from './pages/products/ProductDetail';
 import CartPage from './pages/cart/CartPage';

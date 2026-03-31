@@ -1,21 +1,14 @@
 import { useState, useEffect } from 'react';
 import { ArrowRight, ShoppingCart, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import api from '../services/api';
-
-interface Product {
-  uuid: string;
-  name: string;
-  slug: string;
-  price: number;
-  images: { url: string; isPrimary: boolean }[];
-  category: { name: string; slug: string };
-  brand: { name: string };
-}
+import api from '../../services/api';
+import { useCartStore } from '../../store/useCartStore';
+import { Product, ProductsResponse } from './types';
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const addItem = useCartStore((state) => state.addItem);
 
   useEffect(() => {
     fetchFeatured();
@@ -23,8 +16,8 @@ const Home = () => {
 
   const fetchFeatured = async () => {
     try {
-      const response = await api.get('/products', {
-        params: { featured: 'true', limit: 4, status: 'active' }
+      const response = await api.get<ProductsResponse>('/products', {
+        params: { isFeatured: 'true', limit: 4, status: 'active' }
       });
       setFeaturedProducts(response.data.products);
     } catch (err) {
@@ -50,7 +43,7 @@ const Home = () => {
               <Link to="/products" className="rounded-lg bg-blue-600 px-8 py-3 font-semibold hover:bg-blue-700 transition-colors">
                 Ver catálogo
               </Link>
-              <Link to="/products?featured=true" className="rounded-lg border border-white px-8 py-3 font-semibold hover:bg-white hover:text-gray-900 transition-colors">
+              <Link to="/products?isFeatured=true" className="rounded-lg border border-white px-8 py-3 font-semibold hover:bg-white hover:text-gray-900 transition-colors">
                 Ofertas
               </Link>
             </div>
@@ -117,7 +110,11 @@ const Home = () => {
                     <p className="text-lg font-bold text-blue-600">${product.price.toLocaleString()}</p>
                   </div>
                 </Link>
-                <button className="absolute bottom-4 right-4 rounded-full bg-blue-600 p-2 text-white shadow-lg transition-transform hover:scale-110">
+                <button 
+                  onClick={() => addItem(product as any, 1)}
+                  disabled={product.stock === 0}
+                  className="absolute bottom-4 right-4 rounded-full bg-blue-600 p-2 text-white shadow-lg transition-transform hover:scale-110 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
                   <ShoppingCart size={20} />
                 </button>
               </div>
