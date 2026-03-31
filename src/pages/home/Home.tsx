@@ -69,8 +69,8 @@ const Home = () => {
         <h2 className="mb-8 text-3xl font-bold">Categorías Populares</h2>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[
-            { name: 'Herramientas Eléctricas', slug: 'power-tools' },
-            { name: 'Herramientas de Mano', slug: 'hand-tools' },
+            { name: 'Herramientas Eléctricas', slug: 'herramientas-electricas' },
+            { name: 'Herramientas de Mano', slug: 'herramientas-manuales' },
             { name: 'Accesorios', slug: 'accessories' }
           ].map((cat) => (
             <Link key={cat.slug} to={`/products/${cat.slug}`} className="group relative h-64 overflow-hidden rounded-xl bg-gray-100">

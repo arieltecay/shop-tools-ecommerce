@@ -30,19 +30,19 @@ const ShopLayout = () => {
               <Link to="/products/herramientas-manuales" className="text-gray-900 hover:text-blue-600 transition-colors">Manuales</Link>
             </nav>
           </div>
-          
+
           <div className="flex items-center gap-1 sm:gap-4">
             <form onSubmit={handleSearch} className="hidden md:flex items-center bg-gray-50 rounded-xl px-4 py-2 border border-transparent focus-within:border-blue-500 transition-all">
               <Search size={16} className="text-gray-400" />
-              <input 
-                type="text" 
-                placeholder="Buscar..." 
+              <input
+                type="text"
+                placeholder="Buscar..."
                 className="ml-2 bg-transparent outline-none text-xs font-bold w-32 lg:w-48"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </form>
-            
+
             <Link to="/cart" className="relative p-2.5 text-gray-900 hover:text-blue-600 transition-all">
               <ShoppingCart size={22} strokeWidth={2.5} />
               {itemCount > 0 && (
@@ -52,7 +52,7 @@ const ShopLayout = () => {
               )}
             </Link>
 
-            <button 
+            <button
               onClick={() => setIsMenuOpen(true)}
               className="md:hidden p-2.5 text-gray-900 active:scale-90 transition-all"
             >
@@ -66,7 +66,7 @@ const ShopLayout = () => {
       {isMenuOpen && (
         <div className="fixed inset-0 z-[9999] md:hidden">
           {/* Backdrop */}
-          <div 
+          <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity animate-in fade-in duration-300"
             onClick={() => setIsMenuOpen(false)}
           />
@@ -75,7 +75,7 @@ const ShopLayout = () => {
           <div className="absolute inset-y-0 right-0 w-[280px] bg-white shadow-2xl animate-in slide-in-from-right duration-300 ease-out flex flex-col">
             <div className="flex items-center justify-between p-6 border-b border-gray-50">
               <span className="text-xs font-black text-blue-600 uppercase italic tracking-widest">Navegación</span>
-              <button 
+              <button
                 onClick={() => setIsMenuOpen(false)}
                 className="p-2 bg-gray-50 rounded-xl"
               >
@@ -86,9 +86,9 @@ const ShopLayout = () => {
             <div className="flex-1 overflow-y-auto p-6 space-y-8">
               <form onSubmit={handleSearch} className="flex items-center bg-gray-50 rounded-2xl px-4 py-3 border-2 border-transparent focus-within:border-blue-500 transition-all">
                 <Search size={18} className="text-gray-400" />
-                <input 
-                  type="text" 
-                  placeholder="Buscar..." 
+                <input
+                  type="text"
+                  placeholder="Buscar..."
                   className="ml-2 bg-transparent outline-none text-sm font-bold flex-1"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -140,6 +140,9 @@ const ShopLayout = () => {
           </div>
           <div className="mt-12 border-t border-gray-200 pt-8 text-center text-[9px] font-black text-gray-400 uppercase tracking-widest">
             © {new Date().getFullYear()} Tools Store. Todos los derechos reservados.
+          </div>
+          <div className="mt-4 text-center text-[9px] font-black text-gray-400 uppercase tracking-widest">
+            Ariel Tecay
           </div>
         </div>
       </footer>
