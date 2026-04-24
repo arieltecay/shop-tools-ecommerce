@@ -1,11 +1,35 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, ArrowLeft, ShoppingBag, Plus, Minus } from 'lucide-react';
 import { useCartStore } from '../../store/useCartStore';
+import { analytics } from '../../services/analytics.service';
+import { useEffect } from 'react';
 
 const CartPage = () => {
   const { items, removeItem, updateQuantity, getTotal } = useCartStore();
   const navigate = useNavigate();
   const total = getTotal();
+
+  // Tracking de E-commerce: view_cart
+  useEffect(() => {
+    if (items.length > 0) {
+      analytics.trackEcommerce('view_cart', items.map(item => ({
+        item_id: item._id,
+        item_name: item.name,
+        price: item.price,
+        quantity: item.quantity
+      })), { value: total, currency: 'ARS' });
+    }
+  }, [items, total]);
+
+  const handleBeginCheckout = () => {
+    analytics.trackEcommerce('begin_checkout', items.map(item => ({
+      item_id: item._id,
+      item_name: item.name,
+      price: item.price,
+      quantity: item.quantity
+    })), { value: total, currency: 'ARS' });
+    navigate('/checkout');
+  };
 
   if (items.length === 0) {
     return (
@@ -89,7 +113,7 @@ const CartPage = () => {
               <span className="text-2xl font-bold text-blue-600">${total.toLocaleString()}</span>
             </div>
             <button 
-              onClick={() => navigate('/checkout')}
+              onClick={handleBeginCheckout}
               className="w-full rounded-xl bg-blue-600 py-4 font-bold text-white shadow-lg shadow-blue-200 transition-all hover:bg-blue-700"
             >
               Finalizar Compra

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { IProduct, IProductImage } from '../types';
+import { analytics } from '../services/analytics.service';
 
 interface CartItem {
   uuid: string;
@@ -31,6 +32,15 @@ export const useCartStore = create<CartState>()(
         const currentItems = get().items;
         const existingItem = currentItems.find((i) => i.uuid === product.uuid);
 
+        // Tracking de e-commerce (add_to_cart)
+        analytics.trackEcommerce('add_to_cart', [{
+          item_id: product._id,
+          item_name: product.name,
+          price: product.price,
+          quantity
+        }]);
+
+
         if (existingItem) {
           set({
             items: currentItems.map((i) =>
@@ -58,6 +68,17 @@ export const useCartStore = create<CartState>()(
         }
       },
       removeItem: (uuid) => {
+        const itemToRemove = get().items.find(i => i.uuid === uuid);
+        if (itemToRemove) {
+          // Tracking de e-commerce (remove_from_cart)
+          analytics.trackEcommerce('remove_from_cart', [{
+            item_id: itemToRemove._id,
+            item_name: itemToRemove.name,
+            price: itemToRemove.price,
+            quantity: itemToRemove.quantity
+          }]);
+
+        }
         set({ items: get().items.filter((i) => i.uuid !== uuid) });
       },
       updateQuantity: (uuid, quantity) => {

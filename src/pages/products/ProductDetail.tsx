@@ -7,6 +7,7 @@ import { useCartStore } from '../../store/useCartStore';
 import { IProduct } from '../../types';
 import { getOptimizedUrl } from '../../utils/image-utils';
 import { getWhatsAppLink } from '../../utils/whatsapp-utils';
+import { analytics } from '../../services/analytics.service';
 
 const ProductDetail = () => {
   const { productSlug } = useParams();
@@ -22,6 +23,19 @@ const ProductDetail = () => {
   useEffect(() => {
     fetchProduct();
   }, [productSlug]);
+
+  // Tracking de E-commerce: view_item
+  useEffect(() => {
+    if (product) {
+      analytics.trackEcommerce('view_item', [{
+        item_id: product._id,
+        item_name: product.name,
+        price: product.price,
+        item_brand: product.brand?.name,
+        item_category: product.category.name
+      }]);
+    }
+  }, [product]);
 
   const fetchProduct = async () => {
     setLoading(true);
@@ -43,9 +57,16 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (product) {
+      // El tracking de add_to_cart se realiza dentro de addItem en el store
       addItem(product, quantity);
       setAdded(true);
       setTimeout(() => setAdded(false), 2000);
+    }
+  };
+
+  const handleWhatsAppClick = () => {
+    if (product) {
+      analytics.trackInteraction('whatsapp_consultation', product.name, 'Support');
     }
   };
 
@@ -114,7 +135,10 @@ const ProductDetail = () => {
               {product.images.map((img, idx) => (
                 <button 
                   key={idx}
-                  onClick={() => setActiveImage(idx)}
+                  onClick={() => {
+                    setActiveImage(idx);
+                    analytics.trackInteraction('gallery_view', `Image ${idx + 1}`, 'Product Interaction');
+                  }}
                   className={`h-20 w-20 flex-shrink-0 rounded-lg border-2 transition-all ${
                     activeImage === idx ? 'border-blue-600' : 'border-transparent hover:border-gray-200'
                   } overflow-hidden bg-gray-50 p-1`}
@@ -184,6 +208,7 @@ const ProductDetail = () => {
               href={getWhatsAppLink(product.name, product.sku)} 
               target="_blank" 
               rel="noopener noreferrer"
+              onClick={handleWhatsAppClick}
               className="flex w-full items-center justify-center gap-3 rounded-2xl px-8 py-5 text-xl font-black text-blue-600 border-2 border-blue-600 hover:bg-blue-50 transition-all shadow-md hover:shadow-lg active:scale-95"
             >
               <MessageCircle size={28} color="#25D366" />
@@ -211,6 +236,7 @@ const ProductDetail = () => {
         href={getWhatsAppLink(product.name, product.sku)}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={handleWhatsAppClick}
         className="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-full shadow-lg md:hidden flex items-center justify-center z-50 transition-transform hover:scale-110 active:scale-90"
         aria-label="Consultar por WhatsApp"
       >
@@ -221,3 +247,4 @@ const ProductDetail = () => {
 };
 
 export default ProductDetail;
+;

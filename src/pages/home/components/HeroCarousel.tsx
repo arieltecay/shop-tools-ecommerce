@@ -183,6 +183,8 @@ const HeroCarousel = ({ slides }: HeroCarouselProps) => {
                     <img 
                       src={getOptimizedUrl(productImage, 800, 800)} 
                       alt={currentSlide.title}
+                      loading={currentIndex === 0 ? "eager" : "lazy"}
+                      {...(currentIndex === 0 ? { fetchpriority: "high" } : {})}
                       className="w-full h-full object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)]"
                     />
                   </motion.div>

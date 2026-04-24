@@ -6,6 +6,7 @@ import api from '../../services/api';
 import { IProduct, ICategory, IBrand } from '../../types';
 import { getOptimizedUrl } from '../../utils/image-utils';
 import { useCartStore } from '../../store/useCartStore';
+import { analytics } from '../../services/analytics.service';
 
 const ProductCatalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,6 +35,22 @@ const ProductCatalog = () => {
   useEffect(() => {
     fetchProducts();
   }, [category, brand, q, minPrice, maxPrice, sort]);
+
+  // Tracking de E-commerce: view_item_list
+  useEffect(() => {
+    if (products.length > 0) {
+      analytics.trackEcommerce('view_item_list', products.map(p => ({
+        item_id: p._id,
+        item_name: p.name,
+        price: p.price,
+        item_brand: p.brand?.name,
+        item_category: p.category.name
+      })), { 
+        item_list_name: categorySlug || 'Catalogo General',
+        item_list_id: categorySlug || 'catalogo'
+      });
+    }
+  }, [products, categorySlug]);
 
   const fetchInitialData = async () => {
     try {
@@ -74,6 +91,7 @@ const ProductCatalog = () => {
 
   const handleFilterChange = (key: string, value: string) => {
     const newParams = new URLSearchParams(searchParams);
+    analytics.trackInteraction('filter_change', `${key}: ${value}`, 'Catalog Filters');
     if (value) {
       newParams.set(key, value);
     } else {
@@ -83,6 +101,7 @@ const ProductCatalog = () => {
   };
 
   const clearFilters = () => {
+    analytics.trackInteraction('clear_filters', 'all', 'Catalog Filters');
     setSearchParams({});
     setShowMobileFilters(false);
   };
@@ -221,9 +240,27 @@ const ProductCatalog = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                 {products.map((product) => {
                   const primaryImage = product.images?.find(img => img.isPrimary) || product.images?.[0];
+                  const handleProductClick = () => {
+                    analytics.trackEcommerce('select_item', [{
+                      item_id: product._id,
+                      item_name: product.name,
+                      price: product.price,
+                      item_brand: product.brand?.name,
+                      item_category: product.category.name
+                    }], { 
+                      item_list_name: categorySlug || 'General Catalog',
+                      item_list_id: categorySlug || 'catalog'
+                    });
+                  };
+
+
                   return (
                     <div key={product.uuid} className="group flex flex-col rounded-3xl border border-gray-100 bg-white overflow-hidden transition-all hover:border-blue-500 hover:shadow-lg">
-                      <Link to={`/products/${product.category.slug}/${product.slug}`} className="relative aspect-square overflow-hidden bg-gray-50 flex items-center justify-center p-6">
+                      <Link 
+                        to={`/products/${product.category.slug}/${product.slug}`} 
+                        onClick={handleProductClick}
+                        className="relative aspect-square overflow-hidden bg-gray-50 flex items-center justify-center p-6"
+                      >
                         {primaryImage ? (
                           <img src={getOptimizedUrl(primaryImage.url, 400, 400, 'pad')} alt="" className="h-full w-full object-contain" />
                         ) : (
@@ -237,7 +274,11 @@ const ProductCatalog = () => {
                       </Link>
                       <div className="flex flex-1 flex-col p-5">
                         <p className="text-[8px] text-blue-600 font-black uppercase tracking-widest mb-1">{product.brand?.name}</p>
-                        <Link to={`/products/${product.category.slug}/${product.slug}`} className="mb-3 block text-sm font-black text-gray-900 leading-tight uppercase tracking-tighter italic line-clamp-2">
+                        <Link 
+                          to={`/products/${product.category.slug}/${product.slug}`} 
+                          onClick={handleProductClick}
+                          className="mb-3 block text-sm font-black text-gray-900 leading-tight uppercase tracking-tighter italic line-clamp-2"
+                        >
                           {product.name}
                         </Link>
                         <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-50">

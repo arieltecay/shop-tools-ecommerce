@@ -1,19 +1,40 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ArrowRight, ShoppingCart, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import { useCartStore } from '../../store/useCartStore';
 import { Product, ProductsResponse, HeroSlide } from './types';
 import HeroCarousel from './components/HeroCarousel';
+import { analytics } from '../../services/analytics.service';
+import { getOptimizedUrl } from '../../utils/image-utils';
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
   const [loading, setLoading] = useState(true);
   const addItem = useCartStore((state) => state.addItem);
+  const scrollTracked = useRef(new Set<number>());
 
   useEffect(() => {
     fetchData();
+
+    // Tracking de Scroll Depth
+    const handleScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollHeight <= 0) return;
+      
+      const scrolled = (window.scrollY / scrollHeight) * 100;
+      
+      [25, 50, 75, 100].forEach(threshold => {
+        if (scrolled >= threshold && !scrollTracked.current.has(threshold)) {
+          scrollTracked.current.add(threshold);
+          analytics.trackInteraction('scroll_depth', `${threshold}%`, 'Home');
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const fetchData = async () => {
@@ -27,6 +48,16 @@ const Home = () => {
       
       setFeaturedProducts(productsRes.data.products);
       setHeroSlides(heroRes.data);
+
+      // Tracking de E-commerce: view_item_list
+      if (productsRes.data.products.length > 0) {
+        analytics.trackEcommerce('view_item_list', productsRes.data.products.map(p => ({
+          item_id: p._id,
+          item_name: p.name,
+          price: p.price,
+          item_category: p.category.name
+        })), { item_list_name: 'Productos Destacados' });
+      }
     } catch (err) {
       console.error('Error fetching home data:', err);
     } finally {
@@ -102,12 +133,23 @@ const Home = () => {
         ) : (
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {featuredProducts.map((product) => (
-              <div key={product.uuid} className="group relative rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition-all hover:shadow-md">
+              <div 
+                key={product.uuid} 
+                className="group relative rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition-all hover:shadow-md"
+                onClick={() => {
+                  analytics.trackEcommerce('select_item', [{
+                    item_id: product._id,
+                    item_name: product.name,
+                    price: product.price,
+                    item_category: product.category.name
+                  }], { item_list_name: 'Featured Products' });
+                }}
+              >
                 <Link to={`/products/${product.category.slug}/${product.slug}`}>
                   <div className="aspect-square overflow-hidden rounded-lg bg-gray-50">
                     {product.images.length > 0 ? (
                       <img 
-                        src={product.images.find(img => img.isPrimary)?.url || product.images[0].url} 
+                        src={getOptimizedUrl(product.images.find(img => img.isPrimary)?.url || product.images[0].url, 400, 400, 'pad')} 
                         alt={product.name}
                         className="h-full w-full object-contain transition-transform group-hover:scale-105"
                       />

@@ -1,17 +1,25 @@
-import { Outlet, Link, useNavigate } from 'react-router-dom';
+import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingCart, Search, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCartStore } from '../store/useCartStore';
+import { analytics } from '../services/analytics.service';
 
 const ShopLayout = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const itemCount = useCartStore((state) => state.items.reduce((sum, i) => sum + i.quantity, 0));
+
+  // Tracking de Page Views (SPA)
+  useEffect(() => {
+    analytics.trackPageView(location.pathname + location.search);
+  }, [location]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      analytics.trackInteraction('search', searchQuery, 'Search Bar');
       navigate(`/products?q=${encodeURIComponent(searchQuery)}`);
       setIsMenuOpen(false);
     }
